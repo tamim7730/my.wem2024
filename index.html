@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد رمز QR الإبداعي</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        
+        :root {
+            --primary-color: #6C63FF;
+            --secondary-color: #4CAF50;
+            --accent-color: #FF6B6B;
+            --background-color: #F0F3F7;
+            --text-color: #333333;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .input-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f7fa 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            font-size: 1rem;
+            background-color: #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+        
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0 50px 50px 0;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #5a52d5;
+            transform: translateY(-2px);
+        }
+        
+        .qr-codes-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .qr-item {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .qr-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .qr-code {
+            margin-bottom: 1.5rem;
+        }
+        
+        .qr-code canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .download-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .download-options button {
+            flex: 1;
+            border-radius: 50px;
+            background-color: var(--secondary-color);
+        }
+        
+        .download-options button:hover {
+            background-color: #45a049;
+        }
+        
+        .copy-button {
+            width: 100%;
+            border-radius: 50px;
+            background-color: var(--accent-color);
+        }
+        
+        .copy-button:hover {
+            background-color: #ff5252;
+        }
+        
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>مولد رمز QR الإبداعي</h1>
+        </header>
+
+        <section class="input-section">
+            <div class="input-group">
+                <input type="text" id="url" placeholder="أدخل الرابط هنا">
+                <button onclick="generateQR()">إنشاء رمز QR</button>
+            </div>
+        </section>
+
+        <section id="qr-code-container" class="qr-codes-section">
+            <!-- QR codes will be dynamically added here -->
+        </section>
+    </div>
+
+    <footer>
+        ABDULMAJEED HAMDULLAH
+    </footer>
+
+    <script>
+        function generateQR() {
+            const url = document.getElementById('url').value;
+            if (url) {
+                const qrItem = document.createElement('div');
+                qrItem.className = 'qr-item fade-in';
+                
+                const qrCode = document.createElement('div');
+                qrCode.className = 'qr-code';
+                new QRCode(qrCode, {
+                    text: url,
+                    width: 256,
+                    height: 256,
+                    colorDark : "#6C63FF",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                
+                const downloadOptions = document.createElement('div');
+                downloadOptions.className = 'download-options';
+                downloadOptions.innerHTML = `
+                    <button onclick="downloadQR(this, 'png')">تحميل PNG</button>
+                    <button onclick="downloadQR(this, 'svg')">تحميل SVG</button>
+                `;
+                
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'نسخ الرمز';
+                copyButton.onclick = function() { copyQR(this); };
+                
+                qrItem.appendChild(qrCode);
+                qrItem.appendChild(downloadOptions);
+                qrItem.appendChild(copyButton);
+                
+                document.getElementById('qr-code-container').prepend(qrItem);
+                document.getElementById('url').value = '';
+            }
+        }
+        
+        function downloadQR(button, format) {
+            const canvas = button.closest('.qr-item').querySelector('canvas');
+            if (format === 'png') {
+                const dataURL = canvas.toDataURL('image/png');
+                downloadImage(dataURL, 'qrcode.png');
+            } else if (format === 'svg') {
+                const svg = generateSVG(canvas);
+                const blob = new Blob([svg], {type: 'image/svg+xml;charset=utf-8'});
+                const url = URL.createObjectURL(blob);
+                downloadImage(url, 'qrcode.svg');
+                URL.revokeObjectURL(url);
+            }
+        }
+        
+        function generateSVG(canvas) {
+            const data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+            let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}" viewBox="0 0 ${canvas.width} ${canvas.height}">`;
+            for (let y = 0; y < canvas.height; y++) {
+                for (let x = 0; x < canvas.width; x++) {
+                    if (data.data[(y * canvas.width + x) * 4] === 0) {
+                        svg += `<rect x="${x}" y="${y}" width="1" height="1" fill="#6C63FF" />`;
+                    }
+                }
+            }
+            svg += '</svg>';
+            return svg;
+        }
+        
+        function downloadImage(dataURL, filename) {
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function copyQR(button) {
+            const canvas = button.closest('.qr-item').querySelector('canvas');
+            canvas.toBlob(function(blob) {
+                const item = new ClipboardItem({ "image/png": blob });
+                navigator.clipboard.write([item]).then(function() {
+                    alert("تم نسخ رمز QR إلى الحافظة!");
+                }, function(err) {
+                    console.error("خطأ في النسخ: ", err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
